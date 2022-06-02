@@ -7,9 +7,7 @@ console.log("init prisma");
 
 export class UserService {
   async findAll(): Promise<object[]> {
-    const users = await prisma.user.findMany({
-      // where: { published: true },
-    });
+    const users = await prisma.user.findMany();
     return users;
   }
 
@@ -20,8 +18,18 @@ export class UserService {
     return user;
   }
 
+  async findWithEmail(email: string): Promise<object | null> {
+    return await prisma.user.findFirst({
+      where: { email: email },
+    });
+  }
+
   async create(user: any): Promise<object> {
     const result = await prisma.user.create({ data: { ...user } });
     return result;
+  }
+
+  async removeAll(): Promise<void> {
+    await prisma.user.deleteMany();
   }
 }

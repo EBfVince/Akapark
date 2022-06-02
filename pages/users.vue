@@ -1,7 +1,5 @@
 <script setup>
-const res = await useFetch("/api/users");
-
-const users = ref(res.data);
+const { data: users, refresh } = await useFetch("/api/users");
 const email = ref("");
 const name = ref("");
 
@@ -9,8 +7,7 @@ const save = async () => {
   await $fetch("/api/users/add", {
     params: { email: email.value, name: name.value },
   });
-  const res = await $fetch("/api/users");
-  users.value = res.data;
+  refresh();
 };
 </script>
 
@@ -47,12 +44,12 @@ const save = async () => {
           v-model="name"
         />
       </div>
-      <div
+      <button
         class="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm w-full sm:w-auto px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
         @click="save"
       >
         Submit
-      </div>
+      </button>
     </form>
 
     <div class="container px-5 py-24 mx-auto">

@@ -16,17 +16,15 @@ export default defineEventHandler(async (event) => {
     return sendError(event, error);
   }
 
-  // TODO Check if the user already exists
-  // const userAlreadyExists = await prisma.user.findUnique({
-  //   where: { email: email.toString() },
-  // });
-  // if (userAlreadyExists) {
-  //   const error = createError({
-  //     statusCode: 400,
-  //     statusMessage: `The user with email '${email}' already exists`,
-  //   });
-  //   return sendError(event, error);
-  // }
+  // Check if the user already exists
+  const userAlreadyExists = await service.findWithEmail(email.toString());
+  if (userAlreadyExists) {
+    const error = createError({
+      statusCode: 400,
+      statusMessage: `The user with email '${email}' already exists`,
+    });
+    return sendError(event, error);
+  }
 
   // Add the user to the database and return it
   return await service.create({
